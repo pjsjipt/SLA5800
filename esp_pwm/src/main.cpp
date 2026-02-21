@@ -1,16 +1,14 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <PubSubClient.h>
-#include <Adafruit_ADS1X15.h>
+#include "pwm_mqtt.hpp"
 
-
-const char *ssid = "rede-wifi";
-const char *password = "senhadarede";
+const char *ssid = "tunel"; //"rede-wifi";
+const char *password = "gvento123"; //"senhadarede";
 const char *mqtt_server = "192.168.0.180";
 const uint16_t mqtt_port = 1883;
 
-const char *mqtt_user = "usuariomqtt";
-const char *mqtt_password = "senhamqtt";
+const char *mqtt_user = "tunel"; //"usuariomqtt";
+const char *mqtt_password = "gvento123"; //senhamqtt";
 
 const uint8_t daq_addr = 0x4A; 
 const adsGain_t daq_gain = GAIN_TWO;
@@ -93,21 +91,3 @@ void loop(){
 
 }
 
-
-
-// put function declarations here:
-int myFunction(int, int);
-
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
