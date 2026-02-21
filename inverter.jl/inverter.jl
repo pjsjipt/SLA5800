@@ -20,7 +20,7 @@ md"""
 """
 
 # ╔═╡ 6a5c2faa-9076-441f-8138-3d526ef594ec
-img = load("../pwmsla5800/silks/silk-B-2.png")
+img = load("../pwmsla5800/silks/silk-B-4.png")
 
 # ╔═╡ c9fd0e37-297d-4f5f-9525-94b0c0dbe009
 md"""
@@ -70,7 +70,7 @@ md"""
 """
 
 # ╔═╡ 9006257e-a317-4fd3-ae2e-440ff2322b22
-save("copper-inv.png", img1)
+save("../pwmsla5800/silks/silk-B-4-inv.png", img1)
 
 # ╔═╡ 844d5f9d-8501-4e75-9cce-2dda8c00a607
 img[100,100].alpha
@@ -96,7 +96,7 @@ Images = "~0.26.2"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.12.4"
+julia_version = "1.12.5"
 manifest_format = "2.0"
 project_hash = "b9dfd93f4a4cf43e883b2cc90cc33cfae11df422"
 
