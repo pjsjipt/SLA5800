@@ -18,10 +18,10 @@ protected:
 
     uint8_t* _pwm_chan;  // PWM pins used for generating the PWM
     uint8_t _pwm_val;  // Default value for PWM
+    bool _meas; // Measure or not
     uint8_t _nb; // Number of characters on the bname
     int32_t _frame[NCHANS];
     uint8_t _pwmio[NCHANS]; // PWM channels
-    
     void _callback(char *topic, uint8_t *payload, unsigned int length);
 
     char _buf0[BUFLEN];
@@ -34,7 +34,7 @@ public:
     void initialize();
 
     void set_pwm(int ch, int num);
-
+    void set_meas(int num);
     void set_avg(int avg);
     void scan_ai();
     void set_callback();

@@ -21,7 +21,7 @@ void serial_print_topic(const char *topic, const char *buf, int len){
 PwmMqtt::PwmMqtt(const char *bname, PubSubClient *client, Adafruit_ADS1115 *daq, 
     uint8_t *pwm_chan, uint16_t avg, uint8_t pwm):
     _bname(bname), _client(client),_daq(daq), _pwm_chan(pwm_chan),
-     _avg(avg), _pwm_val(pwm)
+     _avg(avg), _pwm_val(pwm), _meas(false)
 {
     _nb = strlen(bname);
 
@@ -58,6 +58,14 @@ void PwmMqtt::set_pwm(int ch, int num){
     }
 }
 
+void PwmMqtt::set_meas(int num){
+    if (num != 0){
+        _meas = true;
+    } else {
+        _meas = false;
+    }
+}
+
 void PwmMqtt::scan_ai(){
     for (uint8_t i; i < NCHANS; ++i)
         _frame[i] = 0;
@@ -81,7 +89,6 @@ void PwmMqtt::_callback(char *topic, uint8_t *payload, unsigned int length){
         }
         _buf0[length] = 0;
          num = atoi(_buf0);
-        Serial.println(num);
         if (c == 'A'){ // AVG
             set_avg(num);
             Serial.println(_avg);
@@ -91,6 +98,11 @@ void PwmMqtt::_callback(char *topic, uint8_t *payload, unsigned int length){
             Serial.print("PWM"); Serial.print(ch);
             Serial.print(" -> ");
             Serial.println(_pwmio[ch]);
+        }else if (c == 'M'){
+            set_meas(num);
+            Serial.print("MEAS"); Serial.print(" - > ");
+            Serial.println(_meas);
+
         }
     }
 }
@@ -113,6 +125,13 @@ void PwmMqtt::publish_params(){
     serial_print_topic(_buf0, _buf1);
     _client->subscribe(_buf0);
     _client->loop();
+    // MEAS
+    snprintf(_buf0, BUFLEN-2, "%sMEAS", _bname);
+    snprintf(_buf1, BUFLEN-2, "%d", _meas);
+    _client->publish(_buf0, _buf1, true);
+    serial_print_topic(_buf0, _buf1);
+    _client->subscribe(_buf0);
+    _client->loop();
 
     // PWM
     for (uint8_t i; i < NCHANS; ++i){
@@ -130,15 +149,17 @@ void PwmMqtt::loop(){
     float x;
     _client->loop();
 
-    // Read analog input:
-    scan_ai();
-    // Publish the data:
-    for (uint8_t i = 0; i < NCHANS; ++i){
-        x = _daq->computeVolts(_frame[i]);
-        snprintf(_buf0, BUFLEN-2, "%sAI%d", _bname, i);
-        snprintf(_buf1, BUFLEN-2, "%g", x);
-        _client->publish(_buf0, _buf1);
-        serial_print_topic(_buf0, _buf1);
+    if (_meas){
+        // Read analog input:
+        scan_ai();
+        // Publish the data:
+        for (uint8_t i = 0; i < NCHANS; ++i){
+            x = _daq->computeVolts(_frame[i]);
+            snprintf(_buf0, BUFLEN-2, "%sAI%d", _bname, i);
+            snprintf(_buf1, BUFLEN-2, "%g", x);
+            _client->publish(_buf0, _buf1);
+            serial_print_topic(_buf0, _buf1);
+        }
     }
-    
+        
 }
