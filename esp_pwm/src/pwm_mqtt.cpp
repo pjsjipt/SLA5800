@@ -134,7 +134,7 @@ void PwmMqtt::publish_params(){
     _client->loop();
 
     // PWM
-    for (uint8_t i; i < NCHANS; ++i){
+    for (uint8_t i=0; i < NCHANS; ++i){
         snprintf(_buf0, BUFLEN-2, "%sPWM%d", _bname, i);
         snprintf(_buf1, BUFLEN-2, "%d", _pwmio[i]);
         _client->publish(_buf0, _buf1, true);
